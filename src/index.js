@@ -26,21 +26,38 @@ var createScene = function() {
   // Our built-in 'sphere' shape.
 const pinHeight = 0.4;
 const pinDiameter = 0.07;
-BABYLON.SceneLoader.AppendAsync("", "buid.glb",scene).then(()=>{
-  scene.meshes.forEach((item, i) => {
-    if(item.name.search("build")>-1){
-      item.visibility=.5;
-      let pin = BABYLON.MeshBuilder.CreateBox("pin", {width: pinDiameter, height:pinHeight,depth:pinDiameter}, scene);
-      pin.position = new BABYLON.Vector3(-item.position.x,item.position.y,item.position.z);
-      let angle = item.rotationQuaternion.toEulerAngles();
-      pin.rotation.set(-angle.x,-angle.y,-angle.z);
-      console.log("ns cjdctv c le,f he[yek]");
-      console.log("{pos:["+parseFloat(pin.position.x.toFixed(3))+","+parseFloat(pin.position.y.toFixed(3))+","+parseFloat(pin.position.z.toFixed(3))+"],rot:["+parseFloat(pin.rotation.x.toFixed(3))+","+parseFloat(pin.rotation.y.toFixed(3))+","+parseFloat(pin.rotation.z.toFixed(3))+"]},");
-    }
+let names = ["build_1.glb","build_2.glb","build_3.glb","build_4.glb","build_5.glb","build_6.glb","build_7.glb","build_8.glb","build_9.glb"]
+let nameNum=0;
+printCoords();
+function printCoords(){
+  BABYLON.SceneLoader.AppendAsync("", names[nameNum],scene).then(()=>{
+    console.log("[");
 
-  });
-
-})
+    scene.meshes.forEach((item, i) => {
+      if(item.name.search("build")>-1){
+        item.visibility=.5;
+        let pin = BABYLON.MeshBuilder.CreateBox("pin", {width: pinDiameter, height:pinHeight,depth:pinDiameter}, scene);
+        pin.position = new BABYLON.Vector3(-item.position.x,item.position.y,item.position.z);
+        let angle = item.rotationQuaternion.toEulerAngles();
+        pin.rotation.set(-angle.x,-angle.y,-angle.z);
+        console.log("{pos:["+parseFloat(pin.position.x.toFixed(3))+","+parseFloat(pin.position.y.toFixed(3))+","+parseFloat(pin.position.z.toFixed(3))+"],rot:["+parseFloat(pin.rotation.x.toFixed(3))+","+parseFloat(pin.rotation.y.toFixed(3))+","+parseFloat(pin.rotation.z.toFixed(3))+"]},");
+      }
+      if(i == (scene.meshes.length/2)-1 && nameNum < names.length-1){
+        let i = scene.meshes.length-1;
+        console.log("],");
+        nameNum++;
+        do{
+          scene.meshes[i].dispose();
+          if(i==0){
+            printCoords();
+            return;
+          }
+          i--;
+        }while (i >= 0);
+      }
+    });
+  })
+}
 
 
   return scene;
